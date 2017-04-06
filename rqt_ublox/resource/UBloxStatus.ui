@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLCDNumber" name="utcTime">
+    <widget class="QLabel" name="utcTime">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -38,17 +38,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -63,7 +60,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLCDNumber" name="lon">
+    <widget class="QLabel" name="lon">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -73,17 +70,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -98,7 +92,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLCDNumber" name="lat">
+    <widget class="QLabel" name="lat">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -108,17 +102,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -133,7 +124,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QLCDNumber" name="alt">
+    <widget class="QLabel" name="alt">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -143,17 +134,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -168,7 +156,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLCDNumber" name="altMSL">
+    <widget class="QLabel" name="altMSL">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -178,17 +166,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -223,7 +208,7 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QLCDNumber" name="hAcc">
+    <widget class="QLabel" name="hAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -233,17 +218,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -258,7 +240,7 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QLCDNumber" name="vAcc">
+    <widget class="QLabel" name="vAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -268,17 +250,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -293,7 +272,7 @@
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QLCDNumber" name="pDOP">
+    <widget class="QLabel" name="pDOP">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -303,17 +282,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -328,7 +304,7 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QLCDNumber" name="sat">
+    <widget class="QLabel" name="sat">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -338,17 +314,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -363,7 +336,7 @@
     </widget>
    </item>
    <item row="10" column="1">
-    <widget class="QLCDNumber" name="spd">
+    <widget class="QLabel" name="spd">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -373,17 +346,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -398,7 +368,7 @@
     </widget>
    </item>
    <item row="11" column="1">
-    <widget class="QLCDNumber" name="spdAcc">
+    <widget class="QLabel" name="spdAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -408,17 +378,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -433,7 +400,7 @@
     </widget>
    </item>
    <item row="12" column="1">
-    <widget class="QLCDNumber" name="head">
+    <widget class="QLabel" name="head">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -443,17 +410,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
@@ -468,7 +432,7 @@
     </widget>
    </item>
    <item row="13" column="1">
-    <widget class="QLCDNumber" name="headAcc">
+    <widget class="QLabel" name="headAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
      </property>
@@ -478,17 +442,14 @@
      <property name="midLineWidth">
       <number>0</number>
      </property>
-     <property name="smallDecimalPoint">
+     <property name="smallDecimalPoint" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="numDigits">
+     <property name="numDigits" stdset="0">
       <number>6</number>
      </property>
-     <property name="digitCount">
+     <property name="digitCount" stdset="0">
       <number>6</number>
-     </property>
-     <property name="segmentStyle">
-      <enum>QLCDNumber::Flat</enum>
      </property>
      <property name="value" stdset="0">
       <double>1.000000000000000</double>
