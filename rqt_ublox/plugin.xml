@@ -1,0 +1,17 @@
+<library path="src">
+  <class name="Status" type="rqt_ublox.ublox.UBloxStatus" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A Python GUI plugin for monitoring u-blox GPS modules' status.
+    </description>
+    <qtgui>
+      <group>
+        <label>u-blox</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to u-blox GPS.</statustip>
+      </group>
+      <label>Status</label>
+      <icon type="theme">applications-other</icon>
+      <statustip>A Python GUI plugin for monitoring u-blox GPS modules' status.</statustip>
+    </qtgui>
+  </class>
+</library>
