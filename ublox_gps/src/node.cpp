@@ -330,7 +330,9 @@ int main(int argc, char** argv) {
   std::string port;
   int baudrate;
   int rate, meas_rate;
-  bool enable_sbas, enable_glonass, enable_beidou, enable_ppp;
+  bool enable_ppp;
+  std::map<ublox_msgs::CfgGNSS_Block::_gnssId_type, std::map<std::string, int> > gnss_enabled;
+  XmlRpc::XmlRpcValue gnss_enabled_xmlrpc;
   std::string dynamic_model, fix_mode;
   int dr_limit;
   int ublox_version;
@@ -339,14 +341,20 @@ int main(int argc, char** argv) {
   param_nh.param("gnss_frame_id", frame_id, std::string("gps"));
   param_nh.param("gnss_baudrate", baudrate, 9600);
   param_nh.param("gnss_aquire_rate", rate, 4);  //  in Hz
-  param_nh.param("gnss_enable_sbas", enable_sbas, false);
-  param_nh.param("gnss_enable_glonass", enable_glonass, false);
-  param_nh.param("gnss_enable_beidou", enable_beidou, false);
+  param_nh.getParam("gnss_enabled", gnss_enabled_xmlrpc);
   param_nh.param("gnss_enable_ppp", enable_ppp, false);
   param_nh.param("gnss_dynamic_model", dynamic_model, std::string("portable"));
   param_nh.param("gnss_fix_mode", fix_mode, std::string("both"));
   param_nh.param("gnss_dr_limit", dr_limit, 0);
   param_nh.param("gnss_ublox_version", ublox_version, 6);
+
+  for (auto it : gnss_enabled_xmlrpc) {
+    auto gnssId = ublox_msgs::gnssIdFromString(it.first);
+    gnss_enabled[gnssId] = std::map<std::string, int>();
+    for (auto kv : it.second) {
+      gnss_enabled[gnssId][kv.first] = kv.second;
+    }
+  }
 
   if (enable_ppp) {
     ROS_WARN("Warning: PPP is enabled - this is an expert setting.");
@@ -484,34 +492,27 @@ int main(int argc, char** argv) {
         ROS_INFO("Read GNSS config.");
         ROS_INFO("Num. tracking channels in hardware: %i", cfgGNSS.numTrkChHw);
         ROS_INFO("Num. tracking channels to use: %i", cfgGNSS.numTrkChUse);
+        ROS_INFO("GNSS systems: %i", cfgGNSS.numConfigBlocks);
+        for (auto block : cfgGNSS.block) {
+            ROS_INFO("GNSS %i: %i reserved, %i maximum, %x", block.gnssId, block.resTrkCh, block.maxTrkCh, block.flags);
+        }
       } else {
         throw std::runtime_error("Failed to read the GNSS config.");
       }
 
-      cfgGNSS.numConfigBlocks = 1;  //  do services one by one
-      cfgGNSS.msgVer = 0;
-      cfgGNSS.resTrkCh = 8;  //  taken as defaults from ublox manual
-      cfgGNSS.maxTrkCh = 16;
-
-      //  configure glonass
-      cfgGNSS.gnssId = ublox_msgs::CfgGNSS::GNSS_ID_GLONASS;
-      cfgGNSS.flags = enable_glonass;
-      if (!gps.configure(cfgGNSS)) {
-        throw std::runtime_error(std::string("Failed to ") +
-                                 ((enable_glonass) ? "enable" : "disable") +
-                                 " GLONASS.");
-      }
-      if (ublox_version >= 8) {
-        //  configure beidou
-        cfgGNSS.gnssId = ublox_msgs::CfgGNSS::GNSS_ID_BEIDOU;
-        cfgGNSS.flags = enable_beidou;
-        if (!gps.configure(cfgGNSS)) {
-          throw std::runtime_error(std::string("Failed to ") +
-                                   ((enable_beidou) ? "enable" : "disable") +
-                                   " BeiDou.");
+      for (auto &block : cfgGNSS.block) {
+        auto m = gnss_enabled[block.gnssId];
+        if (!m["sig"]) {
+            block.flags = 0;
+        } else {
+            block.flags = 1 | (m["sig"] << 16);
+            block.resTrkCh = m["min"];
+            block.maxTrkCh = m["max"];
         }
-      } else {
-        ROS_WARN("ublox_version < 8, ignoring BeiDou Settings");
+      }
+
+      if (!gps.configure(cfgGNSS)) {
+        throw std::runtime_error("Failed to setup GNSS");
       }
     } else {
       ROS_WARN("ublox_version < 7, ignoring GNSS settings");

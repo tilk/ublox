@@ -44,18 +44,18 @@ DynamicModel modelFromString(const std::string& model) {
   std::string lower = model;
   std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-  std::map<std::string, ublox_gps::DynamicModel> models;
-  models["portable"] = ublox_gps::DYN_MODEL_PORTABLE;
-  models["stationary"] = ublox_gps::DYN_MODEL_STATIONARY;
-  models["pedestrian"] = ublox_gps::DYN_MODEL_PEDESTRIAN;
-  models["automotive"] = ublox_gps::DYN_MODEL_AUTOMOTIVE;
-  models["sea"] = ublox_gps::DYN_MODEL_SEA;
-  models["airborne1"] = ublox_gps::DYN_MODEL_AIRBORNE_1G;
-  models["airborne2"] = ublox_gps::DYN_MODEL_AIRBORNE_2G;
-  models["airborne4"] = ublox_gps::DYN_MODEL_AIRBORNE_4G;
+  static std::map<std::string, ublox_gps::DynamicModel> models{
+    {"portable", ublox_gps::DYN_MODEL_PORTABLE},
+    {"stationary", ublox_gps::DYN_MODEL_STATIONARY},
+    {"pedestrian", ublox_gps::DYN_MODEL_PEDESTRIAN},
+    {"automotive", ublox_gps::DYN_MODEL_AUTOMOTIVE},
+    {"sea", ublox_gps::DYN_MODEL_SEA},
+    {"airborne1", ublox_gps::DYN_MODEL_AIRBORNE_1G},
+    {"airborne2", ublox_gps::DYN_MODEL_AIRBORNE_2G},
+    {"airborne4", ublox_gps::DYN_MODEL_AIRBORNE_4G}
+  };
 
-  std::map<std::string, ublox_gps::DynamicModel>::iterator I =
-      models.find(lower);
+  auto I = models.find(lower);
   if (I == models.end()) {
     throw std::runtime_error(lower + " is not a valid dynamic model.");
   }

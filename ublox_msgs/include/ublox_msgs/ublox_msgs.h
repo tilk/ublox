@@ -136,6 +136,8 @@ namespace Message {
   }
 }
 
+CfgGNSS_Block::_gnssId_type gnssIdFromString(const std::string &gnssId);
+
 } // namespace ublox_msgs
 
 #endif // UBLOX_MSGS_H

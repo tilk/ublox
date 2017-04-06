@@ -35,6 +35,36 @@
 namespace ublox {
 
 template <typename ContainerAllocator>
+struct Serializer<ublox_msgs::CfgGNSS_<ContainerAllocator> >
+{
+    static void read(const uint8_t *data, uint32_t count, typename boost::call_traits<ublox_msgs::CfgGNSS_<ContainerAllocator> >::reference m)
+    {
+        ros::serialization::IStream stream(const_cast<uint8_t *>(data), count);
+        stream.next(m.msgVer);
+        stream.next(m.numTrkChHw);
+        stream.next(m.numTrkChUse);
+        stream.next(m.numConfigBlocks);
+        m.block.resize(m.numConfigBlocks);
+        for(std::size_t i = 0; i < m.block.size(); ++i) ros::serialization::deserialize(stream, m.block[i]);
+    }
+
+    static uint32_t serializedLength (typename boost::call_traits<ublox_msgs::CfgGNSS_<ContainerAllocator> >::param_type m)
+    {
+        return 4 + 8 * m.numConfigBlocks;
+    }
+
+    static void write(uint8_t *data, uint32_t size, typename boost::call_traits<ublox_msgs::CfgGNSS_<ContainerAllocator> >::param_type m)
+    {
+        ros::serialization::OStream stream(data, size);
+        stream.next(m.msgVer);
+        stream.next(m.numTrkChHw);
+        stream.next(m.numTrkChUse);
+        stream.next(m.numConfigBlocks);
+        for(std::size_t i = 0; i < m.block.size(); ++i) ros::serialization::serialize(stream, m.block[i]);
+    }
+};
+
+template <typename ContainerAllocator>
 struct Serializer<ublox_msgs::NavDGPS_<ContainerAllocator> >
 {
     static void read(const uint8_t *data, uint32_t count, typename boost::call_traits<ublox_msgs::NavDGPS_<ContainerAllocator> >::reference m)

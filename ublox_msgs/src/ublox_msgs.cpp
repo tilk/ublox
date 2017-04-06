@@ -68,3 +68,31 @@ DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::RATE, ub
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::GNSS, ublox_msgs, CfgGNSS);
 
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::MON, ublox_msgs::Message::MON::VER, ublox_msgs, MonVER);
+
+namespace ublox_msgs {
+
+CfgGNSS_Block::_gnssId_type gnssIdFromString(const std::string &gnssId) {
+    static std::map<std::string, CfgGNSS_Block::_gnssId_type> gnssIds{
+        {"gps", CfgGNSS::GNSS_ID_GPS},
+        {"sbas", CfgGNSS::GNSS_ID_SBAS},
+        {"galileo", CfgGNSS::GNSS_ID_GALILEO},
+        {"beidou", CfgGNSS::GNSS_ID_BEIDOU},
+        {"imes", CfgGNSS::GNSS_ID_IMES},
+        {"qzss", CfgGNSS::GNSS_ID_QZSS},
+        {"glonass", CfgGNSS::GNSS_ID_GLONASS}
+    };
+
+    std::string lower = gnssId;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+  
+    auto I = gnssIds.find(lower);
+    if (I == gnssIds.end()) {
+        throw std::runtime_error(lower + " is not a valid GNSS ID.");
+    }
+    return I->second;
+}
+
+
+}
+
+
