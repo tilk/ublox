@@ -25,6 +25,7 @@ nav_clk: true
 nav_posllh: true
 nav_velned: true
 nav_orb: true
+nav_pvt: true
 
 #rxm_raw: false
 rxm_rawx: true

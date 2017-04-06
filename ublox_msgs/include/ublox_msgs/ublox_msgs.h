@@ -36,6 +36,7 @@
 #include <ublox_msgs/NavPOSLLH.h>
 #include <ublox_msgs/NavSBAS.h>
 #include <ublox_msgs/NavSOL.h>
+#include <ublox_msgs/NavPVT.h>
 #include <ublox_msgs/NavSTATUS.h>
 #include <ublox_msgs/NavSVINFO.h>
 #include <ublox_msgs/NavTIMEGPS.h>
@@ -92,6 +93,7 @@ namespace Message {
     static const uint8_t DOP = NavDOP::MESSAGE_ID;
     static const uint8_t POSECEF = NavPOSECEF::MESSAGE_ID;
     static const uint8_t POSLLH = NavPOSLLH::MESSAGE_ID;
+    static const uint8_t PVT = NavPVT::MESSAGE_ID;
     static const uint8_t SBAS = NavSBAS::MESSAGE_ID;
     static const uint8_t SOL = NavSOL::MESSAGE_ID;
     static const uint8_t STATUS = NavSTATUS::MESSAGE_ID;

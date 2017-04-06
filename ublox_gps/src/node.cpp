@@ -38,6 +38,7 @@
 #include <ublox_msgs/CfgGNSS.h>
 #include <ublox_msgs/NavPOSLLH.h>
 #include <ublox_msgs/NavSOL.h>
+#include <ublox_msgs/NavPVT.h>
 #include <ublox_msgs/NavSTATUS.h>
 #include <ublox_msgs/NavVELNED.h>
 #include <ublox_msgs/NavORB.h>
@@ -84,6 +85,12 @@ void publishNavSOL(const ublox_msgs::NavSOL& m) {
   static ros::Publisher publisher =
       nh->advertise<ublox_msgs::NavSOL>("navsol", kROSQueueSize);
   num_svs_used = m.numSV;  //  number of satellites used
+  publisher.publish(m);
+}
+
+void publishNavPVT(const ublox_msgs::NavPVT& m) {
+  static ros::Publisher publisher =
+      nh->advertise<ublox_msgs::NavPVT>("navpvt", kROSQueueSize);
   publisher.publish(m);
 }
 
@@ -533,8 +540,10 @@ int main(int argc, char** argv) {
 
     param_nh.param("nav_sol", enabled["nav_sol"], true);
     if (enabled["nav_sol"]){
-      gps.subscribe<ublox_msgs::NavSOL>(
-          boost::bind(&publish<ublox_msgs::NavSOL>, _1, "navsol"), 1);}
+      gps.subscribe<ublox_msgs::NavSOL>(&publishNavSOL, 1);}
+    param_nh.param("nav_pvt", enabled["nav_pvt"], true);
+    if (enabled["nav_pvt"]){
+      gps.subscribe<ublox_msgs::NavPVT>(&publishNavPVT, 1);}
     param_nh.param("nav_status", enabled["nav_status"], enabled["all"]);
     if (enabled["nav_status"])
       gps.subscribe<ublox_msgs::NavSTATUS>(&publishNavStatus, 1);
