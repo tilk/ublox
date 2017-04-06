@@ -1,10 +1,10 @@
 gnss_baudrate: 115200
-gnss_aquire_rate: 4
+gnss_aquire_rate: 10
 gnss_enable_sbas: false
 gnss_enable_glonass: false
 gnss_enable_beidou: false
 gnss_enable_ppp: false
-gnss_dynamic_model: "portable"
+gnss_dynamic_model: "pedestrian"
 gnss_fix_mode: "both"
 gnss_dr_limit: 0
 gnss_ublox_version: 8

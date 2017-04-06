@@ -1,5 +1,5 @@
 <launch>
-    <arg name="gnss_module" default="NEO-M8P-2-10"/>
+    <arg name="gnss_module" default="NEO-M8N-0-10"/>
     <arg name="gnss_port" default="/dev/ttyACM0"/>
     <arg name="gnss_frame_id" default="gnss"/>
     
