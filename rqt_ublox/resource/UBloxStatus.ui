@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>314</width>
-    <height>464</height>
+    <width>355</width>
+    <height>466</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,14 +52,14 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Longitude</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QLabel" name="lon">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -84,14 +84,14 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Latitude</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <widget class="QLabel" name="lat">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -116,14 +116,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Altitude</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QLabel" name="alt">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -148,14 +148,14 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Altitude (MSL)</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QLabel" name="altMSL">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -180,14 +180,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Fix mode</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="QLabel" name="fixMode">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -200,14 +200,14 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>H acc</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QLabel" name="hAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -232,14 +232,14 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_8">
      <property name="text">
       <string>V acc</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="QLabel" name="vAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -264,14 +264,14 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="label_9">
      <property name="text">
       <string>pDOP</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="9" column="1">
     <widget class="QLabel" name="pDOP">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -296,14 +296,14 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="label_10">
      <property name="text">
       <string>Satellites</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <widget class="QLabel" name="sat">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -328,14 +328,14 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="label_11">
      <property name="text">
       <string>Speed</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="11" column="1">
     <widget class="QLabel" name="spd">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -360,14 +360,14 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_12">
      <property name="text">
       <string>Speed acc</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="12" column="1">
     <widget class="QLabel" name="spdAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -392,14 +392,14 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0">
+   <item row="13" column="0">
     <widget class="QLabel" name="label_13">
      <property name="text">
       <string>Heading</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
+   <item row="13" column="1">
     <widget class="QLabel" name="head">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -424,14 +424,14 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="0">
+   <item row="14" column="0">
     <widget class="QLabel" name="label_14">
      <property name="text">
       <string>Heading acc</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
+   <item row="14" column="1">
     <widget class="QLabel" name="headAcc">
      <property name="frameShape">
       <enum>QFrame::Panel</enum>
@@ -455,6 +455,68 @@
       <double>1.000000000000000</double>
      </property>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Time validity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="dateValid">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>date</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="timeValid">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>time</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="timeResolved">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>resolved</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

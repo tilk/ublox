@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UBloxSatelliteWidget</class>
+ <widget class="QWidget" name="UBloxSatelliteWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>655</width>
+    <height>83</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="gnssType">
+       <property name="text">
+        <string>GNSS type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="satelliteId">
+       <property name="text">
+        <string>sat id</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="format">
+        <string>%p dBHz</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="elevazim">
+       <property name="text">
+        <string>El 11 Az 111</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="quality">
+       <property name="text">
+        <string>quality</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="used2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>used</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="eph">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>EPH</string>
+       </property>
+       <property name="shortcut">
+        <string comment="ephemeris"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="alm">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>ALM</string>
+       </property>
+       <property name="shortcut">
+        <string comment="almanac"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="sbas">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>SBAS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="rtcm">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>RTCM</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="pr">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>PR</string>
+       </property>
+       <property name="shortcut">
+        <string comment="pseudorange corrections"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cr">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>CR</string>
+       </property>
+       <property name="shortcut">
+        <string comment="carrier range corrections"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="do_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>DO</string>
+       </property>
+       <property name="shortcut">
+        <string comment="range rate (Doppler) corrections"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
