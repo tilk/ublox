@@ -40,9 +40,10 @@ uint8 FLAGS_PSM_TRACKING = 12
 uint8 FLAGS_PSM_OPT_TRACKING = 16
 uint8 FLAGS_PSM_INACTIVE = 20
 uint8 FLAGS_HEADVEHVALID = 32       # heading of vehicle is valid
-uint8 FLAGS_CARRSOLN_NO = 64        # no carrier phase range solution
-uint8 FLAGS_CARRSOLN_FLOAT = 128    # float solution
-uint8 FLAGS_CARRSOLN_FIXED = 192    # fixed solution
+uint8 FLAGS_CARRSOLN_MASK = 192
+uint8 FLAGS_CARRSOLN_NO = 0        # no carrier phase range solution
+uint8 FLAGS_CARRSOLN_FLOAT = 64    # float solution
+uint8 FLAGS_CARRSOLN_FIXED = 128    # fixed solution
 
 uint8 flags2            # Additional flags
 uint8 FLAGS2_CONFIRMED_AVAI = 32    # Information about UTC Date and Time of Day validity confirmation is available
