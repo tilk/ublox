@@ -14,4 +14,19 @@
       <statustip>A Python GUI plugin for monitoring u-blox GPS modules' status.</statustip>
     </qtgui>
   </class>
+  <class name="Satellites" type="rqt_ublox.ublox.UBloxSatellites" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A Python GUI plugin for observing tracked GPS satellites for u-blox GPS modules.
+    </description>
+    <qtgui>
+      <group>
+        <label>u-blox</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to u-blox GPS.</statustip>
+      </group>
+      <label>Status</label>
+      <icon type="theme">applications-other</icon>
+      <statustip>A Python GUI plugin for observing tracked GPS satellites for u-blox GPS modules.</statustip>
+    </qtgui>
+  </class>
 </library>

@@ -37,7 +37,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QProgressBar" name="progressBar">
+      <widget class="QProgressBar" name="carrierToNoise">
        <property name="value">
         <number>24</number>
        </property>
@@ -65,7 +65,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="used2">
+      <widget class="QCheckBox" name="used">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -147,7 +147,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="do_2">
+      <widget class="QCheckBox" name="dop">
        <property name="enabled">
         <bool>false</bool>
        </property>

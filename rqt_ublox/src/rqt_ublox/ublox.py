@@ -4,9 +4,10 @@ import rospkg
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
+from python_qt_binding.QtCore import pyqtSignal
 from python_qt_binding.QtWidgets import QWidget
 
-from ublox_msgs.msg import NavPVT, NavDGPS
+from ublox_msgs.msg import NavPVT, NavSAT, NavSAT_SV
 
 class UBloxStatus(Plugin):
     fixTypes = {0: "no fix", 1: "DR", 2: "2D", 3: "3D", 4: "DR+GNSS", 5: "TIME"}
@@ -68,8 +69,21 @@ class UBloxStatus(Plugin):
         # Usually used to open a modal configuration dialog
  
 class UBloxSatellites(Plugin):
+    gnssTypes = {0: "GPS", 1: "SBAS", 2: "Galileo", 3: "BeiDou", 4: "IMES", 5: "QZSS", 6: "GLONASS"}
+    qualities = {
+        NavSAT_SV.FLAGS_QUALITY_NO: "no signal",
+        NavSAT_SV.FLAGS_QUALITY_SEARCHING: "searching",
+        NavSAT_SV.FLAGS_QUALITY_ACQUIRED: "acquired",
+        NavSAT_SV.FLAGS_QUALITY_UNUSABLE: "unusable",
+        NavSAT_SV.FLAGS_QUALITY_CODE_LOCKED: "code lock",
+        NavSAT_SV.FLAGS_QUALITY_CARRIER_LOCKED1: "carrier lock",
+        NavSAT_SV.FLAGS_QUALITY_CARRIER_LOCKED2: "carrier lock",
+        NavSAT_SV.FLAGS_QUALITY_CARRIER_LOCKED3: "carrier lock"
+    }
+    update_signal = pyqtSignal(NavSAT)
+
     def __init__(self, context):
-        super(UBloxDGPS, self).__init__(context)
+        super(UBloxSatellites, self).__init__(context)
         self.setObjectName('UBloxSatellites')
 
         self._widget = QWidget()
@@ -82,11 +96,42 @@ class UBloxSatellites(Plugin):
 
         context.add_widget(self._widget)
 
-        self.navdgps_subscriber = rospy.Subscriber("/gnss/navdgps", NavDGPS, self.dgps_callback)
-    
+        self.update_signal.connect(self.sat_slot)
+        self.navdgps_subscriber = rospy.Subscriber("/gnss/navsat", NavSAT, self.update_signal.emit)
+
+        self.ui_sat_file = os.path.join(rospkg.RosPack().get_path('rqt_ublox'), 'resource', 'UBloxSatelliteWidget.ui')
+
+    def newSatWidget(self):
+        satWidget = QWidget()
+        loadUi(self.ui_sat_file, satWidget)
+        return satWidget
+
+    def updateSatWidget(self, wdgt, sv):
+        wdgt.carrierToNoise.setValue(sv.cno)
+        wdgt.satelliteId.setText("%d" % sv.svId)
+        wdgt.gnssType.setText(self.gnssTypes[sv.gnssId])
+        wdgt.quality.setText(self.qualities[sv.flags & NavSAT_SV.FLAGS_QUALITY_MASK])
+        wdgt.elevazim.setText("El %d Az %d" % (sv.elev, sv.azim))
+        wdgt.used.setChecked(sv.flags & NavSAT_SV.FLAGS_SVUSED)
+        wdgt.eph.setChecked(sv.flags & NavSAT_SV.FLAGS_EPH_AVAIL)
+        wdgt.alm.setChecked(sv.flags & NavSAT_SV.FLAGS_ALM_AVAIL)
+        wdgt.sbas.setChecked(sv.flags & NavSAT_SV.FLAGS_SBAS_CORR_USED)
+        wdgt.rtcm.setChecked(sv.flags & NavSAT_SV.FLAGS_RTCM_CORR_USED)
+        wdgt.pr.setChecked(sv.flags & NavSAT_SV.FLAGS_PR_CORR_USED)
+        wdgt.cr.setChecked(sv.flags & NavSAT_SV.FLAGS_CR_CORR_USED)
+        wdgt.dop.setChecked(sv.flags & NavSAT_SV.FLAGS_DO_CORR_USED)
+
     def shutdown_plugin(self):
         self.navdgps_subscriber.unregister()
     
-    def dgps_callback(self, m):
-        pass
+    def sat_slot(self, m):
+        lay = self._widget.satContents.layout()
+        while lay.count():
+            child = lay.takeAt(0)
+            if child.widget(): child.widget().deleteLater()
+        for sv in m.sv:
+            w = self.newSatWidget()
+            self.updateSatWidget(w, sv)
+            lay.addWidget(w)
+
 
