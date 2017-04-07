@@ -1,6 +1,7 @@
 gnss_baudrate: 115200
 gnss_aquire_rate: 10
 gnss_enabled: {GPS: {min: 8, max: 16, sig: 0x1}, SBAS: {min: 1, max: 3, sig: 0x1}, GLONASS: {min: 8, max: 14, sig: 0x1}}
+gnss_enable_sbas: true
 gnss_enable_ppp: false
 gnss_dynamic_model: "pedestrian"
 gnss_fix_mode: "both"
@@ -26,6 +27,9 @@ nav_posllh: true
 nav_velned: true
 nav_orb: true
 nav_pvt: true
+nav_sbas: true
+nav_dgps: true
+nav_sat: true
 
 #rxm_raw: false
 rxm_rawx: true

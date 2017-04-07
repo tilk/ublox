@@ -38,6 +38,7 @@
 #include <ublox_msgs/CfgGNSS.h>
 #include <ublox_msgs/NavPOSLLH.h>
 #include <ublox_msgs/NavSOL.h>
+#include <ublox_msgs/NavSAT.h>
 #include <ublox_msgs/NavPVT.h>
 #include <ublox_msgs/NavSTATUS.h>
 #include <ublox_msgs/NavVELNED.h>
@@ -91,6 +92,18 @@ void publishNavSOL(const ublox_msgs::NavSOL& m) {
 void publishNavPVT(const ublox_msgs::NavPVT& m) {
   static ros::Publisher publisher =
       nh->advertise<ublox_msgs::NavPVT>("navpvt", kROSQueueSize);
+  publisher.publish(m);
+}
+
+void publishNavSBAS(const ublox_msgs::NavSBAS& m) {
+  static ros::Publisher publisher =
+      nh->advertise<ublox_msgs::NavSBAS>("navsbas", kROSQueueSize);
+  publisher.publish(m);
+}
+
+void publishNavDGPS(const ublox_msgs::NavDGPS& m) {
+  static ros::Publisher publisher =
+      nh->advertise<ublox_msgs::NavDGPS>("navdgps", kROSQueueSize);
   publisher.publish(m);
 }
 
@@ -169,6 +182,12 @@ void publishNavPosLLH(const ublox_msgs::NavPOSLLH& m) {
   //  update diagnostics
   freq_diag->tick(fix.header.stamp);
   updater->update();
+}
+
+void publishNavSAT(const ublox_msgs::NavSAT& m) {
+  static ros::Publisher publisher =
+      nh->advertise<ublox_msgs::NavSAT>("navsat", kROSQueueSize);
+  publisher.publish(m);
 }
 
 void publishNavSVINFO(const ublox_msgs::NavSVINFO& m) {
@@ -337,7 +356,7 @@ int main(int argc, char** argv) {
   std::string port;
   int baudrate;
   int rate, meas_rate;
-  bool enable_ppp;
+  bool enable_ppp, enable_sbas;
   std::map<ublox_msgs::CfgGNSS_Block::_gnssId_type, std::map<std::string, int> > gnss_enabled;
   XmlRpc::XmlRpcValue gnss_enabled_xmlrpc;
   std::string dynamic_model, fix_mode;
@@ -349,6 +368,7 @@ int main(int argc, char** argv) {
   param_nh.param("gnss_baudrate", baudrate, 9600);
   param_nh.param("gnss_aquire_rate", rate, 4);  //  in Hz
   param_nh.getParam("gnss_enabled", gnss_enabled_xmlrpc);
+  param_nh.param("gnss_enable_sbas", enable_sbas, false);
   param_nh.param("gnss_enable_ppp", enable_ppp, false);
   param_nh.param("gnss_dynamic_model", dynamic_model, std::string("portable"));
   param_nh.param("gnss_fix_mode", fix_mode, std::string("both"));
@@ -472,11 +492,11 @@ int main(int argc, char** argv) {
       ss << "Failed to set measurement rate to " << meas_rate << "ms.";
       throw std::runtime_error(ss.str());
     }
-    /*if (!gps.enableSBAS(enable_sbas)) {
+    if (!gps.enableSBAS(enable_sbas)) {
       throw std::runtime_error(std::string("Failed to ") +
                                ((enable_sbas) ? "enable" : "disable") +
                                " SBAS.");
-    }*/
+    }
     if (!gps.setPPPEnabled(enable_ppp)) {
       throw std::runtime_error(std::string("Failed to ") +
                                ((enable_ppp) ? "enable" : "disable") + " PPP.");
@@ -541,12 +561,21 @@ int main(int argc, char** argv) {
     param_nh.param("nav_sol", enabled["nav_sol"], true);
     if (enabled["nav_sol"]){
       gps.subscribe<ublox_msgs::NavSOL>(&publishNavSOL, 1);}
-    param_nh.param("nav_pvt", enabled["nav_pvt"], true);
+    param_nh.param("nav_pvt", enabled["nav_pvt"], enabled["all"]);
     if (enabled["nav_pvt"]){
       gps.subscribe<ublox_msgs::NavPVT>(&publishNavPVT, 1);}
+    param_nh.param("nav_sbas", enabled["nav_sbas"], enabled["all"]);
+    if (enabled["nav_sbas"]){
+      gps.subscribe<ublox_msgs::NavSBAS>(&publishNavSBAS, 1);}
+    param_nh.param("nav_dgps", enabled["nav_dgps"], enabled["all"]);
+    if (enabled["nav_dgps"]){
+      gps.subscribe<ublox_msgs::NavDGPS>(&publishNavDGPS, 1);}
     param_nh.param("nav_status", enabled["nav_status"], enabled["all"]);
     if (enabled["nav_status"])
       gps.subscribe<ublox_msgs::NavSTATUS>(&publishNavStatus, 1);
+    param_nh.param("nav_sat", enabled["nav_sat"], enabled["all"]);
+    if (enabled["nav_sat"])
+      gps.subscribe<ublox_msgs::NavSAT>(&publishNavSAT, 20);
     param_nh.param("nav_svinfo", enabled["nav_svinfo"], enabled["all"]);
     if (enabled["nav_svinfo"])
       gps.subscribe<ublox_msgs::NavSVINFO>(&publishNavSVINFO, 20);

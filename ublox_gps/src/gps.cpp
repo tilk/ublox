@@ -218,6 +218,8 @@ bool Gps::enableSBAS(bool enabled) {
   msg.mode = (enabled ? CfgSBAS::MODE_ENABLED : 0);
   msg.usage = 255;
   msg.maxSBAS = 3;
+  msg.scanmode1 = 0; // TODO config?
+  msg.scanmode2 = 0; // TODO config?
   return configure(msg);
 }
 
