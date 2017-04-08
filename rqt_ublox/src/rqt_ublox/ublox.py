@@ -7,7 +7,7 @@ from python_qt_binding import loadUi
 from python_qt_binding.QtCore import pyqtSignal
 from python_qt_binding.QtWidgets import QWidget
 
-from ublox_msgs.msg import NavPVT, NavSAT, NavSAT_SV
+from ublox_msgs.msg import NavPVT, NavSAT, NavSAT_SV, NavDOP
 
 class UBloxStatus(Plugin):
     fixTypes = {0: "no fix", 1: "DR", 2: "2D", 3: "3D", 4: "DR+GNSS", 5: "TIME"}
@@ -137,4 +137,46 @@ class UBloxSatellites(Plugin):
             self.updateSatWidget(w, sv)
             lay.addWidget(w)
 
+class UBloxDOP(Plugin):
+    dop_signal = pyqtSignal(NavDOP)
+
+    def __init__(self, context):
+        super(UBloxDOP, self).__init__(context)
+        self.setObjectName('UBloxDOP')
+
+        self._widget = QWidget()
+        ui_file = os.path.join(rospkg.RosPack().get_path('rqt_ublox'), 'resource', 'UBloxDOP.ui')
+        loadUi(ui_file, self._widget)
+        self._widget.setObjectName('UBloxDOPUi')
+
+        if context.serial_number() > 1:
+            self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
+
+        context.add_widget(self._widget)
+
+        self.dop_signal.connect(self.dop_slot)
+
+        self.navdop_subscriber = rospy.Subscriber("/gnss/navdop", NavDOP, self.dop_signal.emit)
+
+    def shutdown_plugin(self):
+        self.navdop_subscriber.unregister()
+
+    def save_settings(self, plugin_settings, instance_settings):
+        # TODO save intrinsic configuration, usually using:
+        # instance_settings.set_value(k, v)
+        pass
+
+    def restore_settings(self, plugin_settings, instance_settings):
+        # TODO restore intrinsic configuration, usually using:
+        # v = instance_settings.value(k)
+        pass
+
+    def dop_slot(self, m):
+        self._widget.gDOP.setText("%.2f" % (m.gDOP/1e2))
+        self._widget.pDOP.setText("%.2f" % (m.pDOP/1e2))
+        self._widget.tDOP.setText("%.2f" % (m.tDOP/1e2))
+        self._widget.vDOP.setText("%.2f" % (m.vDOP/1e2))
+        self._widget.hDOP.setText("%.2f" % (m.hDOP/1e2))
+        self._widget.nDOP.setText("%.2f" % (m.nDOP/1e2))
+        self._widget.eDOP.setText("%.2f" % (m.eDOP/1e2))
 
