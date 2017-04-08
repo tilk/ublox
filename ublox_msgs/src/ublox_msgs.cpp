@@ -61,6 +61,7 @@ DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::AID, ublox_msgs::Message::AID::EPH, ubl
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::AID, ublox_msgs::Message::AID::HUI, ublox_msgs, AidHUI);
 
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::ANT, ublox_msgs, CfgANT);
+DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::ODO, ublox_msgs, CfgODO);
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::CFG, ublox_msgs, CfgCFG);
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::MSG, ublox_msgs, CfgMSG);
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::NAV5, ublox_msgs, CfgNAV5);

@@ -36,8 +36,10 @@
 #include <ros/ros.h>
 #include <ros/serialization.h>
 #include <ublox_msgs/CfgGNSS.h>
+#include <ublox_msgs/CfgODO.h>
 #include <ublox_msgs/NavPOSLLH.h>
 #include <ublox_msgs/NavSOL.h>
+#include <ublox_msgs/NavDOP.h>
 #include <ublox_msgs/NavSAT.h>
 #include <ublox_msgs/NavPVT.h>
 #include <ublox_msgs/NavSTATUS.h>
@@ -86,6 +88,12 @@ void publishNavSOL(const ublox_msgs::NavSOL& m) {
   static ros::Publisher publisher =
       nh->advertise<ublox_msgs::NavSOL>("navsol", kROSQueueSize);
   num_svs_used = m.numSV;  //  number of satellites used
+  publisher.publish(m);
+}
+
+void publishNavDOP(const ublox_msgs::NavDOP& m) {
+  static ros::Publisher publisher =
+      nh->advertise<ublox_msgs::NavDOP>("navdop", kROSQueueSize);
   publisher.publish(m);
 }
 
@@ -375,6 +383,18 @@ int main(int argc, char** argv) {
   param_nh.param("gnss_dr_limit", dr_limit, 0);
   param_nh.param("gnss_ublox_version", ublox_version, 6);
 
+  bool odo_enable, odo_lp_vel, odo_lp_cog, odo_lowspeed_cog;
+  double odo_lp_vel_gain, odo_lp_cog_gain, odo_lowspeed_max_speed;
+  int odo_lowspeed_max_pos_acc;
+  param_nh.param("odo_enable", odo_enable, false);
+  param_nh.param("odo_lp_vel", odo_lp_vel, false);
+  param_nh.param("odo_lp_cog", odo_lp_cog, false);
+  param_nh.param("odo_lowspeed_cog", odo_lowspeed_cog, false);
+  param_nh.param("odo_lp_vel_gain", odo_lp_vel_gain, 0.0);
+  param_nh.param("odo_lp_cog_gain", odo_lp_cog_gain, 0.0);
+  param_nh.param("odo_lowspeed_max_speed", odo_lowspeed_max_speed, 0.0);
+  param_nh.param("odo_lowspeed_max_pos_acc", odo_lowspeed_max_pos_acc, 0);
+
   for (auto it : gnss_enabled_xmlrpc) {
     auto gnssId = ublox_msgs::gnssIdFromString(it.first);
     gnss_enabled[gnssId] = std::map<std::string, int>();
@@ -513,6 +533,22 @@ int main(int argc, char** argv) {
       throw std::runtime_error(ss.str());
     }
 
+    ublox_msgs::CfgODO cfgODO;
+    cfgODO.version = 0;
+    cfgODO.cogMaxSpeed = odo_lowspeed_max_speed * 10;
+    cfgODO.cogMaxPosAcc = odo_lowspeed_max_pos_acc;
+    cfgODO.velLpGain = odo_lp_vel_gain * 255;
+    cfgODO.cogLpGain = odo_lp_cog_gain * 255;
+    cfgODO.flags = (odo_enable ? ublox_msgs::CfgODO::FLAGS_USE_ODO : 0)
+                 | (odo_lowspeed_cog ? ublox_msgs::CfgODO::FLAGS_USE_COG : 0)
+                 | (odo_lp_vel ? ublox_msgs::CfgODO::FLAGS_OUT_LP_VEL : 0)
+                 | (odo_lp_cog ? ublox_msgs::CfgODO::FLAGS_OUT_LP_COG : 0);
+    cfgODO.odoCfg = 0;
+
+    if (!gps.configure(cfgODO)) {
+      throw std::runtime_error("Failed to setup odometer");
+    }
+
     if (ublox_version >= 7) {
       ublox_msgs::CfgGNSS cfgGNSS;
       if (gps.poll(cfgGNSS)) {
@@ -561,6 +597,9 @@ int main(int argc, char** argv) {
     param_nh.param("nav_sol", enabled["nav_sol"], true);
     if (enabled["nav_sol"]){
       gps.subscribe<ublox_msgs::NavSOL>(&publishNavSOL, 1);}
+    param_nh.param("nav_dop", enabled["nav_dop"], enabled["all"]);
+    if (enabled["nav_dop"]){
+      gps.subscribe<ublox_msgs::NavDOP>(&publishNavDOP, 1);}
     param_nh.param("nav_pvt", enabled["nav_pvt"], enabled["all"]);
     if (enabled["nav_pvt"]){
       gps.subscribe<ublox_msgs::NavPVT>(&publishNavPVT, 1);}
