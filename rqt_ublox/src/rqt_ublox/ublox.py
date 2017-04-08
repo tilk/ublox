@@ -11,6 +11,7 @@ from ublox_msgs.msg import NavPVT, NavSAT, NavSAT_SV
 
 class UBloxStatus(Plugin):
     fixTypes = {0: "no fix", 1: "DR", 2: "2D", 3: "3D", 4: "DR+GNSS", 5: "TIME"}
+    pvt_signal = pyqtSignal(NavPVT)
 
     def __init__(self, context):
         super(UBloxStatus, self).__init__(context)
@@ -26,7 +27,9 @@ class UBloxStatus(Plugin):
 
         context.add_widget(self._widget)
 
-        self.navpvt_subscriber = rospy.Subscriber("/gnss/navpvt", NavPVT, self.pvt_callback)
+        self.pvt_signal.connect(self.pvt_slot)
+
+        self.navpvt_subscriber = rospy.Subscriber("/gnss/navpvt", NavPVT, self.pvt_signal.emit)
 
     def shutdown_plugin(self):
         self.navpvt_subscriber.unregister()
@@ -41,7 +44,7 @@ class UBloxStatus(Plugin):
         # v = instance_settings.value(k)
         pass
 
-    def pvt_callback(self, m):
+    def pvt_slot(self, m):
         fixtext = self.fixTypes[m.fixType]
         if m.flags & NavPVT.FLAGS_DIFFSOLN: fixtext += "+DGNSS"
         if m.flags & NavPVT.FLAGS_CARRSOLN_MASK: fixtext += "+CP"
