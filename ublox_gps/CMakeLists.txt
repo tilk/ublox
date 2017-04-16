@@ -4,6 +4,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   roscpp_serialization
   ublox_msgs
+  rtcm_msgs
   ublox_serialization
   diagnostic_updater
 )
@@ -11,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS roscpp ublox_msgs ublox_serialization)
+    CATKIN_DEPENDS roscpp rtcm_msgs ublox_msgs ublox_serialization)
 
 # include boost
 find_package(Boost REQUIRED COMPONENTS system regex thread)

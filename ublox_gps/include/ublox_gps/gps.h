@@ -171,6 +171,8 @@ class Gps {
   bool configure(const ConfigT& message, bool wait = true);
   void waitForAcknowledge(const boost::posix_time::time_duration& timeout);
 
+  bool sendRtcm(const std::vector<uint8_t> &message);
+
  private:
   void readCallback(unsigned char* data, std::size_t& size);
 

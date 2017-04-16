@@ -49,6 +49,7 @@
 #include <ublox_msgs/RxmRAWX.h>
 #include <ublox_msgs/RxmRAWX_Meas.h>
 #include <ublox_msgs/ublox_msgs.h>
+#include <rtcm_msgs/Message.h>
 
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
@@ -123,6 +124,8 @@ UbloxPublisher<ublox_msgs::RxmEPH> pubRxmEPH("rxmeph");
 UbloxPublisher<ublox_msgs::AidALM> pubAidALM("aidalm");
 UbloxPublisher<ublox_msgs::AidEPH> pubAidEPH("aideph");
 UbloxPublisher<ublox_msgs::AidHUI> pubAidHUI("aidhui");
+
+ros::Subscriber subRTCM;
 
 struct NavData {
     unsigned int iTOW;
@@ -307,6 +310,11 @@ void fix_diagnostic(diagnostic_updater::DiagnosticStatusWrapper& stat) {
   stat.add("numSV", navData.numSV);
 }
 
+void rtcmCallback(const rtcm_msgs::Message::ConstPtr &msg)
+{
+  gps.sendRtcm(msg->message);
+}
+
 int main(int argc, char** argv) {
   boost::asio::io_service io_service;
   ros::Timer poller;
@@ -357,6 +365,10 @@ int main(int argc, char** argv) {
   param_nh.param("odo_lp_cog_gain", odo_lp_cog_gain, 0.0);
   param_nh.param("odo_lowspeed_max_speed", odo_lowspeed_max_speed, 0.0);
   param_nh.param("odo_lowspeed_max_pos_acc", odo_lowspeed_max_pos_acc, 0);
+
+  std::string rtcm_topic;
+  param_nh.param("rtcm_topic", rtcm_topic, std::string("rtcm"));
+  subRTCM = nh->subscribe(rtcm_topic, 10, rtcmCallback);
 
   for (auto it : gnss_enabled_xmlrpc) {
     auto gnssId = ublox_msgs::gnssIdFromString(it.first);
