@@ -154,6 +154,7 @@ class Gps {
   template <typename T>
   Callbacks::iterator subscribe(
       typename CallbackHandler_<T>::Callback callback);
+  Callbacks::iterator subscribeInf(uint8_t id, typename CallbackHandler_<ublox_msgs::Inf>::Callback callback);
   template <typename T>
   bool read(T& message,
             const boost::posix_time::time_duration& timeout = default_timeout_);
@@ -202,6 +203,16 @@ extern template void Gps::initialize<boost::asio::ip::tcp::socket>(
 // extern template void
 // Gps::initialize<boost::asio::ip::udp::socket>(boost::asio::ip::udp::socket&
 // stream, boost::asio::io_service& io_service);
+
+Callbacks::iterator Gps::subscribeInf(uint8_t id, 
+    typename CallbackHandler_<ublox_msgs::Inf>::Callback callback) {
+  boost::mutex::scoped_lock lock(callback_mutex_);
+  CallbackHandler_<ublox_msgs::Inf>* handler = 
+    new CallbackHandler_<ublox_msgs::Inf>(callback);
+  return callbacks_.insert(
+      std::make_pair(std::make_pair(ublox_msgs::Inf::CLASS_ID, id), 
+                     boost::shared_ptr<CallbackHandler>(handler)));
+}
 
 template <typename T>
 Callbacks::iterator Gps::subscribe(

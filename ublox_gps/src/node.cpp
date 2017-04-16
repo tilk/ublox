@@ -37,6 +37,7 @@
 #include <ros/serialization.h>
 #include <ublox_msgs/CfgGNSS.h>
 #include <ublox_msgs/CfgODO.h>
+#include <ublox_msgs/CfgINF.h>
 #include <ublox_msgs/NavPOSLLH.h>
 #include <ublox_msgs/NavSOL.h>
 #include <ublox_msgs/NavDOP.h>
@@ -315,6 +316,20 @@ void rtcmCallback(const rtcm_msgs::Message::ConstPtr &msg)
   gps.sendRtcm(msg->message);
 }
 
+void handleLog(uint8_t level, const ublox_msgs::Inf &msg)
+{
+  ros::console::Level severity;
+  switch(level) {
+    default:
+    case ublox_msgs::Message::INF::DEBUG: severity = ros::console::levels::Debug; break;
+    case ublox_msgs::Message::INF::ERROR: severity = ros::console::levels::Error; break;
+    case ublox_msgs::Message::INF::NOTICE: severity = ros::console::levels::Info; break;
+    case ublox_msgs::Message::INF::TEST: severity = ros::console::levels::Debug; break;
+    case ublox_msgs::Message::INF::WARNING: severity = ros::console::levels::Warn; break;
+  }
+  ROS_LOG(severity, std::string(ROSCONSOLE_NAME_PREFIX) + ".ublox", msg.str.c_str());
+}
+
 int main(int argc, char** argv) {
   boost::asio::io_service io_service;
   ros::Timer poller;
@@ -522,6 +537,19 @@ int main(int argc, char** argv) {
 
     if (!gps.configure(cfgODO)) {
       throw std::runtime_error("Failed to setup odometer");
+    }
+
+    for (int t = 0; t <= 4; t++) {
+      gps.subscribeInf(t, boost::bind(handleLog, t, _1));
+    }
+
+    ublox_msgs::CfgINF cfgINF;
+    cfgINF.block.resize(1);
+    cfgINF.block[0].protocolID = 0; // TODO
+    for (int x = 0; x < 6; x++) cfgINF.block[0].infMsgMask[x] = 0xff; // TODO
+
+    if (!gps.configure(cfgINF)) {
+      throw std::runtime_error("Failed to setup information messages");
     }
 
     if (ublox_version >= 7) {

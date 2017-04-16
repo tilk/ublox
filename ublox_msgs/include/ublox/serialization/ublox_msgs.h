@@ -35,6 +35,47 @@
 namespace ublox {
 
 template <typename ContainerAllocator>
+struct Serializer<ublox_msgs::Inf_<ContainerAllocator> >
+{
+  static void read(const uint8_t *data, uint32_t count, typename boost::call_traits<ublox_msgs::Inf_<ContainerAllocator> >::reference m)
+  {
+    m.str = std::string((const char *)data, count);
+  }
+  
+  static uint32_t serializedLength(typename boost::call_traits<ublox_msgs::Inf_<ContainerAllocator> >::param_type m)
+  {
+    return m.str.size();
+  }
+
+  static void write(uint8_t *data, uint32_t size, typename boost::call_traits<ublox_msgs::Inf_<ContainerAllocator> >::param_type m)
+  {
+    std::copy(m.str.begin(), m.str.end(), data);
+  }
+};
+
+template <typename ContainerAllocator>
+struct Serializer<ublox_msgs::CfgINF_<ContainerAllocator> >
+{
+    static void read(const uint8_t *data, uint32_t count, typename boost::call_traits<ublox_msgs::CfgINF_<ContainerAllocator> >::reference m)
+    {
+        ros::serialization::IStream stream(const_cast<uint8_t *>(data), count);
+        m.block.resize(count / 10);
+        for(std::size_t i = 0; i < m.block.size(); ++i) ros::serialization::deserialize(stream, m.block[i]);
+    }
+
+    static uint32_t serializedLength(typename boost::call_traits<ublox_msgs::CfgINF_<ContainerAllocator> >::param_type m)
+    {
+        return m.block.size() * 10;
+    }
+
+    static void write(uint8_t *data, uint32_t size, typename boost::call_traits<ublox_msgs::CfgINF_<ContainerAllocator> >::param_type m) 
+    {
+        ros::serialization::OStream stream(data, size);
+        for(std::size_t i = 0; i < m.block.size(); ++i) ros::serialization::serialize(stream, m.block[i]);
+    }
+};
+
+template <typename ContainerAllocator>
 struct Serializer<ublox_msgs::CfgGNSS_<ContainerAllocator> >
 {
     static void read(const uint8_t *data, uint32_t count, typename boost::call_traits<ublox_msgs::CfgGNSS_<ContainerAllocator> >::reference m)

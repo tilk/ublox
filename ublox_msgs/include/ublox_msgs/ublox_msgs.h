@@ -58,12 +58,15 @@
 #include <ublox_msgs/RxmSFRBX.h>
 #include <ublox_msgs/RxmSVSI.h>
 
+#include <ublox_msgs/Inf.h>
+
 #include <ublox_msgs/AidALM.h>
 #include <ublox_msgs/AidEPH.h>
 #include <ublox_msgs/AidHUI.h>
 
 #include <ublox_msgs/CfgANT.h>
 #include <ublox_msgs/CfgCFG.h>
+#include <ublox_msgs/CfgINF.h>
 #include <ublox_msgs/CfgMSG.h>
 #include <ublox_msgs/CfgNAV5.h>
 #include <ublox_msgs/CfgNAVX5.h>
@@ -120,6 +123,14 @@ namespace Message {
     static const uint8_t SVSI = RxmSVSI::MESSAGE_ID;
   }
 
+  namespace INF {
+    static const uint8_t DEBUG = 0x04;
+    static const uint8_t ERROR = 0x00;
+    static const uint8_t NOTICE = 0x02;
+    static const uint8_t TEST = 0x3;
+    static const uint8_t WARNING = 0x01;
+  }
+
   namespace AID {
     static const uint8_t ALM = AidALM::MESSAGE_ID;
     static const uint8_t EPH = AidEPH::MESSAGE_ID;
@@ -130,6 +141,7 @@ namespace Message {
     static const uint8_t ANT   = CfgANT::MESSAGE_ID;
     static const uint8_t CFG   = CfgCFG::MESSAGE_ID;
     static const uint8_t MSG   = CfgMSG::MESSAGE_ID;
+    static const uint8_t INF   = CfgINF::MESSAGE_ID;
     static const uint8_t NAV5  = CfgNAV5::MESSAGE_ID;
     static const uint8_t NAVX5 = CfgNAVX5::MESSAGE_ID;
     static const uint8_t ODO   = CfgODO::MESSAGE_ID;

@@ -73,6 +73,13 @@ DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::CFG, ublox_msgs::Message::CFG::GNSS, ub
 
 DECLARE_UBLOX_MESSAGE(ublox_msgs::Class::MON, ublox_msgs::Message::MON::VER, ublox_msgs, MonVER);
 
+template class ublox::Serializer<ublox_msgs::Inf>;
+template class ublox::Message<ublox_msgs::Inf>;
+namespace ublox_msgs { namespace {
+  static const ublox::Message<Inf>::StaticKeyInitializer static_key_initializer_InfDEBUG(
+    ublox_msgs::Class::INF, ublox_msgs::Message::INF::DEBUG);
+}}
+
 namespace ublox_msgs {
 
 CfgGNSS_Block::_gnssId_type gnssIdFromString(const std::string &gnssId) {
