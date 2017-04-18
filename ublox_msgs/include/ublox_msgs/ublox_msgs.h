@@ -47,6 +47,10 @@
 #include <ublox_msgs/NavORB.h>
 #include <ublox_msgs/NavORB_SV.h>
 #include <ublox_msgs/NavEOE.h>
+#include <ublox_msgs/NavHPPOSECEF.h>
+#include <ublox_msgs/NavHPPOSLLH.h>
+#include <ublox_msgs/NavRELPOSNED.h>
+#include <ublox_msgs/NavSVIN.h>
 
 #include <ublox_msgs/RxmALM.h>
 #include <ublox_msgs/RxmEPH.h>
@@ -57,6 +61,7 @@
 #include <ublox_msgs/RxmSFRB.h>
 #include <ublox_msgs/RxmSFRBX.h>
 #include <ublox_msgs/RxmSVSI.h>
+#include <ublox_msgs/RxmRTCM.h>
 
 #include <ublox_msgs/Inf.h>
 
@@ -111,6 +116,10 @@ namespace Message {
     static const uint8_t VELNED = NavVELNED::MESSAGE_ID;
     static const uint8_t ORB = NavORB::MESSAGE_ID;
     static const uint8_t EOE = NavEOE::MESSAGE_ID;
+    static const uint8_t HPPOSECEF = NavHPPOSECEF::MESSAGE_ID;
+    static const uint8_t HPPOSLLH = NavHPPOSLLH::MESSAGE_ID;
+    static const uint8_t RELPOSNED = NavRELPOSNED::MESSAGE_ID;
+    static const uint8_t SVIN = NavSVIN::MESSAGE_ID;
   }
 
   namespace RXM {
@@ -121,6 +130,7 @@ namespace Message {
     static const uint8_t SFRB = RxmSFRB::MESSAGE_ID;
     static const uint8_t SFRBX = RxmSFRBX::MESSAGE_ID;
     static const uint8_t SVSI = RxmSVSI::MESSAGE_ID;
+    static const uint8_t RTCM = RxmRTCM::MESSAGE_ID;
   }
 
   namespace INF {

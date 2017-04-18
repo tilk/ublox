@@ -47,6 +47,9 @@
 #include <ublox_msgs/NavVELNED.h>
 #include <ublox_msgs/NavORB.h>
 #include <ublox_msgs/NavCLOCK.h>
+#include <ublox_msgs/NavHPPOSLLH.h>
+#include <ublox_msgs/NavRELPOSNED.h>
+#include <ublox_msgs/NavSVIN.h>
 #include <ublox_msgs/RxmRAWX.h>
 #include <ublox_msgs/RxmRAWX_Meas.h>
 #include <ublox_msgs/ublox_msgs.h>
@@ -111,12 +114,15 @@ UbloxPublisher<ublox_msgs::NavSBAS> pubNavSBAS("navsbas");
 UbloxPublisher<ublox_msgs::NavDGPS> pubNavDGPS("navdgps");
 UbloxPublisher<ublox_msgs::NavVELNED> pubNavVelNED("navvelned");
 UbloxPublisher<ublox_msgs::NavPOSLLH> pubNavPosLLH("navposllh");
+UbloxPublisher<ublox_msgs::NavHPPOSLLH> pubNavHPPosLLH("navhpposllh");
 UbloxPublisher<ublox_msgs::NavSAT> pubNavSat("navsat");
 UbloxPublisher<ublox_msgs::NavSVINFO> pubNavSVINFO("navsvinfo");
 UbloxPublisher<ublox_msgs::NavORB> pubNavORB("navorb");
 UbloxPublisher<ublox_msgs::NavTIMEGPS> pubNavTimeGPS("navtimegps");
 UbloxPublisher<ublox_msgs::NavTIMEUTC> pubNavTimeUTC("navtimeutc");
 UbloxPublisher<ublox_msgs::NavCLOCK> pubNavClock("navclock");
+UbloxPublisher<ublox_msgs::NavRELPOSNED> pubNavRelPosNED("navrelposned");
+UbloxPublisher<ublox_msgs::NavSVIN> pubNavSVIN("navsvin");
 UbloxPublisher<ublox_msgs::RxmRAW> pubRxmRAW("rxmraw");
 UbloxPublisher<ublox_msgs::RxmRAWX> pubRxmRAWX("rxmrawx");
 UbloxPublisher<ublox_msgs::RxmSFRB> pubRxmSFRB("rxmsfrb");
@@ -142,7 +148,15 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   // update nav data
   navData.iTOW = m.iTOW;
 
-  if (pubNavPVT.isCurrent(m.iTOW)) {
+  if (pubNavHPPosLLH.isCurrent(m.iTOW)) {
+    const auto &nm = pubNavHPPosLLH.lastValue();
+    navData.lon = nm.lon * 1e-7 + nm.lonHp * 1e-9;
+    navData.lat = nm.lat * 1e-7 + nm.latHp * 1e-9;
+    navData.height = nm.height * 1e-3 + nm.heightHp * 1e-4;
+    navData.hMSL = nm.hMSL * 1e-3 + nm.hMSLHp * 1e-4;
+    navData.hAcc = nm.hAcc * 1e-4;
+    navData.vAcc = nm.vAcc * 1e-4;
+  } else if (pubNavPVT.isCurrent(m.iTOW)) {
     const auto &nm = pubNavPVT.lastValue();
     navData.lon = nm.lon * 1e-7;
     navData.lat = nm.lat * 1e-7;
@@ -614,6 +628,7 @@ int main(int argc, char** argv) {
     param_nh.param("all", enabled["all"], false);
     param_nh.param("rxm", enabled["rxm"], false);
     param_nh.param("nav", enabled["nav"], false);
+    param_nh.param("nav_rtk", enabled["nav_rtk"], false);
     param_nh.param("aid", enabled["aid"], false);
 
     param_nh.param("nav_sol", enabled["nav_sol"], enabled["all"]);
@@ -646,6 +661,13 @@ int main(int argc, char** argv) {
     if (enabled["nav_velned"]) pubNavVelNED.subscribe();
     param_nh.param("nav_orb", enabled["nav_orb"], enabled["all"]);
     if (enabled["nav_orb"]) pubNavORB.subscribe();
+
+    param_nh.param("nav_hpposllh", enabled["nav_hpposllh"], enabled["nav_rtk"]);
+    if (enabled["nav_hpposllh"]) pubNavHPPosLLH.subscribe();
+    param_nh.param("nav_svin", enabled["nav_svin"], enabled["nav_rtk"]);
+    if (enabled["nav_svin"]) pubNavSVIN.subscribe();
+    param_nh.param("nav_relposned", enabled["nav_relposned"], enabled["nav_rtk"]);
+    if (enabled["nav_relposned"]) pubNavRelPosNED.subscribe();
 
     param_nh.param("rxm_raw", enabled["rxm_raw"], enabled["all"] || enabled["rxm"]);
     if (enabled["rxm_raw"]) pubRxmRAW.subscribe();
