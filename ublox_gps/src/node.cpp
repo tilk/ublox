@@ -52,13 +52,14 @@
 #include <ublox_msgs/ublox_msgs.h>
 #include <rtcm_msgs/Message.h>
 
-#include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
 
 #include <diagnostic_updater/diagnostic_updater.h>
 #include <diagnostic_updater/publisher.h>
+
+#include <tf2/LinearMath/Quaternion.h>
 
 const static uint32_t kROSQueueSize = 1;
 
@@ -94,6 +95,7 @@ public:
   }
 private:
   void publish(const MessageT &m) {
+    last = m;
     publisher.publish(m);
   }
   std::string topicName;
@@ -132,7 +134,7 @@ struct NavData {
     unsigned int iTOW;
     double lon, lat, height, hMSL, hAcc, vAcc;
     double nDOP, eDOP, vDOP;
-    double velN, velE, velD, sAcc, heading, headAcc;
+    double gSpeed, velN, velE, velD, sAcc, heading, headAcc;
     int numSV;
 } navData;
 
@@ -156,7 +158,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
     navData.hMSL = nm.hMSL * 1e-3;
     navData.hAcc = nm.hAcc * 1e-3;
     navData.vAcc = nm.vAcc * 1e-3;
-  }
+  } else ROS_WARN_THROTTLE(5, "No current position data!");
 
   if (pubNavDOP.isCurrent(m.iTOW)) {
     const auto &nm = pubNavDOP.lastValue();
@@ -169,7 +171,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   } else if (pubNavSol.isCurrent(m.iTOW)) {
     const auto &nm = pubNavPVT.lastValue();
     navData.nDOP = navData.eDOP = navData.vDOP = nm.pDOP * 0.01;
-  }
+  } else ROS_WARN_THROTTLE(5, "No current DOP data!");
 
   if (pubNavPVT.isCurrent(m.iTOW)) {
     const auto &nm = pubNavPVT.lastValue();
@@ -179,6 +181,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
     navData.sAcc = nm.sAcc * 1e-3;
     navData.heading = nm.headMot * 1e-5;
     navData.headAcc = nm.headAcc * 1e-5;
+    navData.gSpeed = nm.gSpeed * 1e-3;
   } else if (pubNavVelNED.isCurrent(m.iTOW)) {
     const auto &nm = pubNavVelNED.lastValue();
     navData.velN = nm.velN * 1e-2;
@@ -187,7 +190,8 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
     navData.sAcc = nm.sAcc * 1e-2;
     navData.heading = nm.heading * 1e-5;
     navData.headAcc = nm.cAcc * 1e-5;
-  }
+    navData.gSpeed = nm.gSpeed * 1e-2;
+  } else ROS_WARN_THROTTLE(5, "No current velocity data!");
   
   if (pubNavPVT.isCurrent(m.iTOW)) 
     navData.numSV = pubNavPVT.lastValue().numSV;
@@ -229,30 +233,45 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
 
   fix.status.service = fix.status.SERVICE_GPS;
   fixPublisher.publish(fix);
-/* TODO
+
   static ros::Publisher odometryPublisher =
-      nh->advertise<geometry_msgs::TwistWithCovarianceStamped>("fix_odom", kROSQueueSize);
+      nh->advertise<nav_msgs::Odometry>("fix_odom", kROSQueueSize);
   odometry.header.stamp = ros::Time::now();
   odometry.header.frame_id = odom_frame_id;
   odometry.header.seq++;
   odometry.child_frame_id = odom_frame_id;
 
-  //  convert to XYZ linear velocity
-  velocity.twist.twist.linear.x = m.velE / 100.0;
-  velocity.twist.twist.linear.y = m.velN / 100.0;
-  velocity.twist.twist.linear.z = -m.velD / 100.0;
+  tf2::Quaternion q;
+  q.setRPY(0, 0, navData.heading / 180 * M_PI);
+  odometry.pose.pose.orientation.x = q.x();
+  odometry.pose.pose.orientation.y = q.y();
+  odometry.pose.pose.orientation.z = q.z();
+  odometry.pose.pose.orientation.w = q.w();
 
-  const double stdSpeed = (m.sAcc / 100.0) * 3;
+  odometry.twist.twist.linear.x = navData.velE;
+  odometry.twist.twist.linear.y = navData.velN;
+  odometry.twist.twist.linear.z = -navData.velD;
+
+  const double stdHead = (90 - navData.headAcc) / 180 * M_PI 
+    + M_PI/20/(navData.gSpeed+0.0001); // add uncertainty for low speed
+  const double stdSpeed = navData.sAcc * 3;
 
   const int cols = 6;
-  velocity.twist.covariance[cols * 0 + 0] = stdSpeed * stdSpeed;
-  velocity.twist.covariance[cols * 1 + 1] = stdSpeed * stdSpeed;
-  velocity.twist.covariance[cols * 2 + 2] = stdSpeed * stdSpeed;
-  velocity.twist.covariance[cols * 3 + 3] = -1;  //  angular rate unsupported
+  odometry.pose.covariance[cols * 0 + 0] = -1;
+  odometry.pose.covariance[cols * 1 + 1] = -1;
+  odometry.pose.covariance[cols * 2 + 2] = -1;
+  odometry.pose.covariance[cols * 3 + 3] = -1;
+  odometry.pose.covariance[cols * 4 + 4] = -1;
+  odometry.pose.covariance[cols * 5 + 5] = stdHead * stdHead;
+  odometry.twist.covariance[cols * 0 + 0] = stdSpeed * stdSpeed;
+  odometry.twist.covariance[cols * 1 + 1] = stdSpeed * stdSpeed;
+  odometry.twist.covariance[cols * 2 + 2] = stdSpeed * stdSpeed;
+  odometry.twist.covariance[cols * 3 + 3] = -1;  //  angular rate unsupported
+  odometry.twist.covariance[cols * 4 + 4] = -1;  //  angular rate unsupported
+  odometry.twist.covariance[cols * 5 + 5] = -1;  //  angular rate unsupported
 
-  velocityPublisher.publish(velocity);
-  last_nav_vel = m;
-*/
+  odometryPublisher.publish(odometry);
+
   //  update diagnostics
   freq_diag->tick(fix.header.stamp);
   updater->update();
@@ -357,7 +376,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle param_nh("~");
   param_nh.param("gnss_port", port, std::string("/dev/ttyACM0"));
   param_nh.param("gnss_frame_id", frame_id, std::string("gps"));
-  param_nh.param("odom_frame_id", odom_frame_id, std::string("odom"));
+  param_nh.param("odom_frame_id", odom_frame_id, std::string("map"));
   param_nh.param("gnss_baudrate", baudrate, 9600);
   param_nh.param("gnss_aquire_rate", rate, 4);  //  in Hz
   param_nh.getParam("gnss_enabled", gnss_enabled_xmlrpc);
