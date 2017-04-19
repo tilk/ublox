@@ -80,6 +80,8 @@
 #include <ublox_msgs/CfgRATE.h>
 #include <ublox_msgs/CfgSBAS.h>
 #include <ublox_msgs/CfgGNSS.h>
+#include <ublox_msgs/CfgTMODE2.h>
+#include <ublox_msgs/CfgTMODE3.h>
 
 #include <ublox_msgs/MonVER.h>
 
@@ -159,6 +161,8 @@ namespace Message {
     static const uint8_t RATE  = CfgRATE::MESSAGE_ID;
     static const uint8_t SBAS  = CfgSBAS::MESSAGE_ID;
     static const uint8_t GNSS  = CfgGNSS::MESSAGE_ID;
+    static const uint8_t TMODE2 = CfgTMODE2::MESSAGE_ID;
+    static const uint8_t TMODE3 = CfgTMODE3::MESSAGE_ID;
   }
   
   namespace MON {
