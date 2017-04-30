@@ -125,7 +125,7 @@ void Gps::initialize(boost::asio::serial_port& serial_port,
   configured_ = false;
 
   boost::asio::serial_port_base::baud_rate current_baudrate;
-
+/*
   serial_port.set_option(boost::asio::serial_port_base::baud_rate(4800));
   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
   if (debug) {
@@ -161,7 +161,7 @@ void Gps::initialize(boost::asio::serial_port& serial_port,
   }
   configured_ = setBaudrate(baudrate_);
   if (configured_) return;
-
+*/
   serial_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate_));
   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
   if (debug) {
