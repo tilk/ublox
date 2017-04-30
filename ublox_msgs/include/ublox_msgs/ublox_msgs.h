@@ -69,6 +69,7 @@
 #include <ublox_msgs/AidEPH.h>
 #include <ublox_msgs/AidHUI.h>
 
+#include <ublox_msgs/CfgRST.h>
 #include <ublox_msgs/CfgANT.h>
 #include <ublox_msgs/CfgCFG.h>
 #include <ublox_msgs/CfgINF.h>
@@ -159,6 +160,7 @@ namespace Message {
     static const uint8_t ODO   = CfgODO::MESSAGE_ID;
     static const uint8_t PRT   = CfgPRT::MESSAGE_ID;
     static const uint8_t RATE  = CfgRATE::MESSAGE_ID;
+    static const uint8_t RST   = CfgRST::MESSAGE_ID;
     static const uint8_t SBAS  = CfgSBAS::MESSAGE_ID;
     static const uint8_t GNSS  = CfgGNSS::MESSAGE_ID;
     static const uint8_t TMODE2 = CfgTMODE2::MESSAGE_ID;

@@ -527,6 +527,7 @@ int main(int argc, char** argv) {
 
   //  apply all requested settings
   try {
+    gps.reset();
     if (!gps.isInitialized()) {
       throw std::runtime_error("Failed to initialize.");
     }

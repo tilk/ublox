@@ -103,6 +103,14 @@ bool Gps::setBaudrate(unsigned int baudrate) {
   return configure(port);
 }
 
+void Gps::reset() {
+  CfgRST rst;
+  rst.navBbrMask = CfgRST::MASK_HOTSTART;
+  rst.resetMode = CfgRST::RESET_MODE_HW_RESET_IMMEDIATE;
+  configure(rst, false);
+  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+}
+
 void Gps::initialize(const boost::shared_ptr<Worker>& worker) {
   if (worker_) return;
   worker_ = worker;
