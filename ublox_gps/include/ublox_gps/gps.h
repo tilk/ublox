@@ -175,6 +175,7 @@ class Gps {
   bool sendRtcm(const std::vector<uint8_t> &message);
 
   void reset();
+  bool autobaud(boost::asio::serial_port& serial_port);
 
  private:
   void readCallback(unsigned char* data, std::size_t& size);

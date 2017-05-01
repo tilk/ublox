@@ -100,7 +100,7 @@ bool Gps::setBaudrate(unsigned int baudrate) {
   if (debug) {
     std::cout << "Changing baudrate to " << baudrate << std::endl;
   }
-  return configure(port);
+  return configure(port, false);
 }
 
 void Gps::reset() {
@@ -130,54 +130,27 @@ void Gps::initialize(boost::asio::serial_port& serial_port,
   initialize(boost::shared_ptr<Worker>(
       new AsyncWorker<boost::asio::serial_port>(serial_port, io_service)));
 
+  serial_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate_));
+}
+
+bool Gps::autobaud(boost::asio::serial_port& serial_port) {
   configured_ = false;
 
+  static int baudrates[] = {4800, 9600, 19200, 38400, 115200};
   boost::asio::serial_port_base::baud_rate current_baudrate;
-/*
-  serial_port.set_option(boost::asio::serial_port_base::baud_rate(4800));
-  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-  if (debug) {
-    serial_port.get_option(current_baudrate);
-    std::cout << "Set baudrate " << current_baudrate.value() << std::endl;
-  }
-  configured_ = setBaudrate(baudrate_);
-  if (configured_) return;
 
-  serial_port.set_option(boost::asio::serial_port_base::baud_rate(9600));
-  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-  if (debug) {
-    serial_port.get_option(current_baudrate);
-    std::cout << "Set baudrate " << current_baudrate.value() << std::endl;
+  for (auto baudrate : baudrates) {
+    serial_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate));
+    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+    if (debug) {
+      serial_port.get_option(current_baudrate);
+      std::cout << "Set baudrate" << current_baudrate.value() << std::endl;
+    }
+    configured_ = setBaudrate(baudrate_);
+    if (configured_) break;
   }
-  configured_ = setBaudrate(baudrate_);
-  if (configured_) return;
 
-  serial_port.set_option(boost::asio::serial_port_base::baud_rate(19200));
-  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-  if (debug) {
-    serial_port.get_option(current_baudrate);
-    std::cout << "Set baudrate " << current_baudrate.value() << std::endl;
-  }
-  configured_ = setBaudrate(baudrate_);
-  if (configured_) return;
-
-  serial_port.set_option(boost::asio::serial_port_base::baud_rate(38400));
-  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-  if (debug) {
-    serial_port.get_option(current_baudrate);
-    std::cout << "Set baudrate " << current_baudrate.value() << std::endl;
-  }
-  configured_ = setBaudrate(baudrate_);
-  if (configured_) return;
-*/
   serial_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate_));
-  boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-  if (debug) {
-    serial_port.get_option(current_baudrate);
-    std::cout << "Set baudrate " << current_baudrate.value() << std::endl;
-  }
-  configured_ = setBaudrate(baudrate_);
-  if (configured_) return;
 }
 
 void Gps::close() {
