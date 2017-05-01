@@ -8,6 +8,8 @@ gnss_fix_mode: "both"
 gnss_dr_limit: 0
 gnss_ublox_version: 8
 
+init_reset: true
+
 odo_enable: false
 odo_lowspeed_cog: true
 odo_lp_vel: true

@@ -382,6 +382,7 @@ int main(int argc, char** argv) {
   int baudrate;
   int rate, meas_rate;
   bool enable_ppp, enable_sbas;
+  bool init_reset;
   std::map<ublox_msgs::CfgGNSS_Block::_gnssId_type, std::map<std::string, int> > gnss_enabled;
   XmlRpc::XmlRpcValue gnss_enabled_xmlrpc;
   std::string dynamic_model, fix_mode;
@@ -401,6 +402,7 @@ int main(int argc, char** argv) {
   param_nh.param("gnss_dr_limit", dr_limit, 0);
   param_nh.param("gnss_ublox_version", ublox_version, 6);
   param_nh.param("gnss_uere", uere, 6.0);
+  param_nh.param("init_reset", init_reset, false);
 
   bool odo_enable, odo_lp_vel, odo_lp_cog, odo_lowspeed_cog;
   double odo_lp_vel_gain, odo_lp_cog_gain, odo_lowspeed_max_speed;
@@ -527,7 +529,7 @@ int main(int argc, char** argv) {
 
   //  apply all requested settings
   try {
-    gps.reset();
+    if (init_reset) gps.reset();
     if (!gps.isInitialized()) {
       throw std::runtime_error("Failed to initialize.");
     }
