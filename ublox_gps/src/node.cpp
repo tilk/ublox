@@ -28,6 +28,7 @@
 //=================================================================================================
 
 #include <ublox_gps/gps.h>
+#include <ublox_gps/navsat_conversions.h>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/serial_port.hpp>
 
@@ -255,6 +256,13 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.header.seq++;
   odometry.child_frame_id = odom_frame_id;
 
+  std::string utmzone;
+  double northing, easting;
+  NavsatConversions::LLtoUTM(navData.lat, navData.lon, northing, easting, utmzone);
+  odometry.pose.pose.position.x = easting;
+  odometry.pose.pose.position.y = northing;
+  odometry.pose.pose.position.z = navData.height;
+
   tf2::Quaternion q;
   q.setRPY(0, 0, navData.heading / 180 * M_PI);
   odometry.pose.pose.orientation.x = q.x();
@@ -271,9 +279,9 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   const double stdSpeed = navData.sAcc * 3;
 
   const int cols = 6;
-  odometry.pose.covariance[cols * 0 + 0] = -1;
-  odometry.pose.covariance[cols * 1 + 1] = -1;
-  odometry.pose.covariance[cols * 2 + 2] = -1;
+  odometry.pose.covariance[cols * 0 + 0] = stdHa * stdHa + stdNp * stdNp;
+  odometry.pose.covariance[cols * 1 + 1] = stdHa * stdHa + stdEp * stdEp;
+  odometry.pose.covariance[cols * 2 + 2] = stdVa * stdVa + stdVp * stdVp;
   odometry.pose.covariance[cols * 3 + 3] = -1;
   odometry.pose.covariance[cols * 4 + 4] = -1;
   odometry.pose.covariance[cols * 5 + 5] = stdHead * stdHead;
