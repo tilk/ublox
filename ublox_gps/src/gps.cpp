@@ -151,6 +151,7 @@ bool Gps::autobaud(boost::asio::serial_port& serial_port) {
   }
 
   serial_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate_));
+  return configured_;
 }
 
 void Gps::close() {

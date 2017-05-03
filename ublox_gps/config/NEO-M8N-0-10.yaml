@@ -32,7 +32,7 @@ nav_timegps: true
 nav_timeutc: true
 nav_sol: true
 nav_status: true
-nav_svinfo: true
+nav_svinfo: false
 nav_clk: true
 nav_posllh: true
 nav_velned: true
@@ -44,9 +44,9 @@ nav_sat: true
 nav_dop: true
 
 #rxm_raw: false
-rxm_rawx: true
-rxm_sfrbx: true
-rxm_svsi: true
+rxm_rawx: false
+rxm_sfrbx: false
+rxm_svsi: false
 
 aid_alm: true
 aid_eph: true

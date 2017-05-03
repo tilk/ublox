@@ -540,7 +540,10 @@ int main(int argc, char** argv) {
 
   //  apply all requested settings
   try {
-    if (init_reset) gps.reset();
+    if (init_reset) {
+        gps.reset();
+        ROS_INFO("Receiver reset issued");
+    }
     if (!gps.isInitialized()) {
       throw std::runtime_error("Failed to initialize.");
     }
@@ -652,15 +655,15 @@ int main(int argc, char** argv) {
     param_nh.param("nav_pvt", enabled["nav_pvt"], enabled["all"]);
     if (enabled["nav_pvt"]) pubNavPVT.subscribe();
     param_nh.param("nav_sbas", enabled["nav_sbas"], enabled["all"]);
-    if (enabled["nav_sbas"]) pubNavSBAS.subscribe();
+    if (enabled["nav_sbas"]) pubNavSBAS.subscribe(rate);
     param_nh.param("nav_dgps", enabled["nav_dgps"], enabled["all"]);
-    if (enabled["nav_dgps"]) pubNavDGPS.subscribe();
+    if (enabled["nav_dgps"]) pubNavDGPS.subscribe(rate);
     param_nh.param("nav_status", enabled["nav_status"], enabled["all"]);
     if (enabled["nav_status"]) pubNavStatus.subscribe();
     param_nh.param("nav_sat", enabled["nav_sat"], enabled["all"]);
-    if (enabled["nav_sat"]) pubNavSat.subscribe(20);
+    if (enabled["nav_sat"]) pubNavSat.subscribe(rate);
     param_nh.param("nav_svinfo", enabled["nav_svinfo"], enabled["all"]);
-    if (enabled["nav_svinfo"]) pubNavSVINFO.subscribe(20);
+    if (enabled["nav_svinfo"]) pubNavSVINFO.subscribe(rate);
     param_nh.param("nav_clk", enabled["nav_clk"], enabled["all"]);
     if (enabled["nav_clk"]) pubNavClock.subscribe();
 
@@ -674,7 +677,7 @@ int main(int argc, char** argv) {
     param_nh.param("nav_velned", enabled["nav_velned"], enabled["all"]);
     if (enabled["nav_velned"]) pubNavVelNED.subscribe();
     param_nh.param("nav_orb", enabled["nav_orb"], enabled["all"]);
-    if (enabled["nav_orb"]) pubNavORB.subscribe();
+    if (enabled["nav_orb"]) pubNavORB.subscribe(rate);
 
     param_nh.param("nav_hpposllh", enabled["nav_hpposllh"], enabled["nav_rtk"]);
     if (enabled["nav_hpposllh"]) pubNavHPPosLLH.subscribe();
@@ -692,7 +695,7 @@ int main(int argc, char** argv) {
     param_nh.param("rxm_sfrbx", enabled["rxm_sfrbx"], enabled["all"] || enabled["rxm"]);
     if (enabled["rxm_sfrbx"]) pubRxmSFRBX.subscribe();
     param_nh.param("rxm_svsi", enabled["rxm_svsi"], enabled["all"] || enabled["rxm"]);
-    if (enabled["rxm_svsi"]) pubRxmSVSI.subscribe();
+    if (enabled["rxm_svsi"]) pubRxmSVSI.subscribe(rate);
 
     param_nh.param("aid_alm", enabled["aid_alm"], enabled["all"] || enabled["aid"]);
     if (enabled["aid_alm"]) pubAidALM.subscribe();
