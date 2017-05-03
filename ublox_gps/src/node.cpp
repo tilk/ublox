@@ -264,7 +264,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.pose.pose.position.z = navData.height;
 
   tf2::Quaternion q;
-  q.setRPY(0, 0, navData.heading / 180 * M_PI);
+  q.setRPY(0, 0, (90 - navData.heading) / 180 * M_PI);
   odometry.pose.pose.orientation.x = q.x();
   odometry.pose.pose.orientation.y = q.y();
   odometry.pose.pose.orientation.z = q.z();
@@ -274,7 +274,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.twist.twist.linear.y = navData.velN;
   odometry.twist.twist.linear.z = -navData.velD;
 
-  const double stdHead = (90 - navData.headAcc) / 180 * M_PI 
+  const double stdHead = navData.headAcc / 180 * M_PI 
     + M_PI/20/(navData.gSpeed+0.0001); // add uncertainty for low speed
   const double stdSpeed = navData.sAcc * 3;
 
