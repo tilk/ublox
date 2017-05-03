@@ -63,6 +63,7 @@
 #include <diagnostic_updater/diagnostic_updater.h>
 #include <diagnostic_updater/publisher.h>
 
+#include <tf2/LinearMath/Transform.h>
 #include <tf2/LinearMath/Quaternion.h>
 
 const static uint32_t kROSQueueSize = 1;
@@ -254,7 +255,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.header.stamp = ros::Time::now();
   odometry.header.frame_id = odom_frame_id;
   odometry.header.seq++;
-  odometry.child_frame_id = odom_frame_id;
+  odometry.child_frame_id = frame_id;
 
   std::string utmzone;
   double northing, easting;
@@ -265,14 +266,20 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
 
   tf2::Quaternion q;
   q.setRPY(0, 0, (90 - navData.heading) / 180 * M_PI);
+
   odometry.pose.pose.orientation.x = q.x();
   odometry.pose.pose.orientation.y = q.y();
   odometry.pose.pose.orientation.z = q.z();
   odometry.pose.pose.orientation.w = q.w();
+  
+  tf2::Transform rot(q);
+  rot = rot.inverse();
+  tf2::Vector3 vel(navData.velE, navData.velN, -navData.velD);
+  vel = rot(vel);
 
-  odometry.twist.twist.linear.x = navData.velE;
-  odometry.twist.twist.linear.y = navData.velN;
-  odometry.twist.twist.linear.z = -navData.velD;
+  odometry.twist.twist.linear.x = vel.x();
+  odometry.twist.twist.linear.y = vel.y();
+  odometry.twist.twist.linear.z = vel.z();
 
   const double stdHead = navData.headAcc / 180 * M_PI 
     + M_PI/20/(navData.gSpeed+0.0001); // add uncertainty for low speed
@@ -282,8 +289,8 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.pose.covariance[cols * 0 + 0] = stdHa * stdHa + stdNp * stdNp;
   odometry.pose.covariance[cols * 1 + 1] = stdHa * stdHa + stdEp * stdEp;
   odometry.pose.covariance[cols * 2 + 2] = stdVa * stdVa + stdVp * stdVp;
-  odometry.pose.covariance[cols * 3 + 3] = -1;
-  odometry.pose.covariance[cols * 4 + 4] = -1;
+  odometry.pose.covariance[cols * 3 + 3] = -1; // roll unsupported
+  odometry.pose.covariance[cols * 4 + 4] = -1; // pitch unsupported
   odometry.pose.covariance[cols * 5 + 5] = stdHead * stdHead;
   odometry.twist.covariance[cols * 0 + 0] = stdSpeed * stdSpeed;
   odometry.twist.covariance[cols * 1 + 1] = stdSpeed * stdSpeed;
