@@ -57,6 +57,7 @@
 #include <rtcm_msgs/Message.h>
 
 #include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
 
@@ -137,6 +138,7 @@ UbloxPublisher<ublox_msgs::AidEPH> pubAidEPH("aideph");
 UbloxPublisher<ublox_msgs::AidHUI> pubAidHUI("aidhui");
 
 ros::Subscriber subRTCM;
+ros::Subscriber subDir;
 
 struct NavData {
     unsigned int iTOW;
@@ -144,6 +146,7 @@ struct NavData {
     double nDOP, eDOP, vDOP;
     double gSpeed, velN, velE, velD, sAcc, heading, headAcc;
     int numSV;
+    double headingCorrection;
 } navData;
 
 void endOfEpoch(const ublox_msgs::NavEOE &m) {
@@ -265,7 +268,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.pose.pose.position.z = navData.height;
 
   tf2::Quaternion q;
-  q.setRPY(0, 0, (90 - navData.heading) / 180 * M_PI);
+  q.setRPY(0, 0, (90 - navData.heading + navData.headingCorrection) / 180 * M_PI);
 
   odometry.pose.pose.orientation.x = q.x();
   odometry.pose.pose.orientation.y = q.y();
@@ -364,6 +367,11 @@ void rtcmCallback(const rtcm_msgs::Message::ConstPtr &msg)
   gps.sendRtcm(msg->message);
 }
 
+void dirTwistCallback(const geometry_msgs::TwistWithCovarianceStamped &msg)
+{
+  navData.headingCorrection = msg.twist.twist.linear.x >= 0 ? 0 : M_PI;
+}
+
 void handleLog(uint8_t level, const ublox_msgs::Inf &msg)
 {
   ros::console::Level severity;
@@ -435,6 +443,13 @@ int main(int argc, char** argv) {
   std::string rtcm_topic;
   param_nh.param("rtcm_topic", rtcm_topic, std::string("rtcm"));
   subRTCM = nh->subscribe(rtcm_topic, 10, rtcmCallback);
+  
+  std::string dir_twist_topic;
+  param_nh.param("dir_twist_topic", dir_twist_topic, std::string(""));
+
+  if (!dir_twist_topic.empty()) {
+    subDir = nh->subscribe(dir_twist_topic, 1, dirTwistCallback);
+  }
 
   for (auto it : gnss_enabled_xmlrpc) {
     auto gnssId = ublox_msgs::gnssIdFromString(it.first);
@@ -715,6 +730,7 @@ int main(int argc, char** argv) {
 
     poller = nh->createTimer(ros::Duration(1.0), &pollMessages);
     poller.start();
+
     ros::spin();
   }
 
