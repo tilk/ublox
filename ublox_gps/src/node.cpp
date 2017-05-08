@@ -146,8 +146,14 @@ struct NavData {
     double nDOP, eDOP, vDOP;
     double gSpeed, velN, velE, velD, sAcc, heading, headAcc;
     int numSV;
+    ros::Time odomTime;
     double headingCorrection;
+    double velOdom;
+    ros::Time headingSilenceTime;
 } navData;
+
+const double velOdomEps = 0.5;
+const ros::Duration silenceDuration(0.5);
 
 void endOfEpoch(const ublox_msgs::NavEOE &m) {
   // update nav data
@@ -268,7 +274,7 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.pose.pose.position.z = navData.height;
 
   tf2::Quaternion q;
-  q.setRPY(0, 0, (90 - navData.heading + navData.headingCorrection) / 180 * M_PI);
+  q.setRPY(0, 0, (90 - navData.heading) / 180 * M_PI + navData.headingCorrection);
 
   odometry.pose.pose.orientation.x = q.x();
   odometry.pose.pose.orientation.y = q.y();
@@ -285,7 +291,8 @@ void endOfEpoch(const ublox_msgs::NavEOE &m) {
   odometry.twist.twist.linear.z = vel.z();
 
   const double stdHead = navData.headAcc / 180 * M_PI 
-    + M_PI/20/(navData.gSpeed+0.0001); // add uncertainty for low speed
+    + M_PI/20/(navData.gSpeed+0.0001) // add uncertainty for low speed
+    + (navData.headingSilenceTime > navData.odomTime ? 1e6 : 0); // extremely low covariance when stationary or exiting stationary
   const double stdSpeed = navData.sAcc * 3;
 
   const int cols = 6;
@@ -369,7 +376,12 @@ void rtcmCallback(const rtcm_msgs::Message::ConstPtr &msg)
 
 void dirTwistCallback(const geometry_msgs::TwistWithCovarianceStamped &msg)
 {
-  navData.headingCorrection = msg.twist.twist.linear.x >= 0 ? 0 : M_PI;
+  navData.odomTime = msg.header.stamp;
+  navData.velOdom = msg.twist.twist.linear.x;
+  navData.headingCorrection = navData.velOdom >= 0 ? 0 : M_PI;
+  if (fabs(navData.velOdom < velOdomEps)) {
+    navData.headingSilenceTime = navData.odomTime + silenceDuration;
+  }
 }
 
 void handleLog(uint8_t level, const ublox_msgs::Inf &msg)
