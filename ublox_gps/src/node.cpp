@@ -152,8 +152,8 @@ struct NavData {
     ros::Time headingSilenceTime;
 } navData;
 
-const double velOdomEps = 0.5;
-const ros::Duration silenceDuration(0.5);
+double velOdomEps;
+ros::Duration silenceDuration;
 
 void endOfEpoch(const ublox_msgs::NavEOE &m) {
   // update nav data
@@ -457,7 +457,11 @@ int main(int argc, char** argv) {
   subRTCM = nh->subscribe(rtcm_topic, 10, rtcmCallback);
   
   std::string dir_twist_topic;
+  double sdur;
   param_nh.param("dir_twist_topic", dir_twist_topic, std::string(""));
+  param_nh.param("dir_vel_eps", velOdomEps, 0.2);
+  param_nh.param("dir_silence_duration", sdur, 0.5);
+  silenceDuration = ros::Duration(sdur);
 
   if (!dir_twist_topic.empty()) {
     subDir = nh->subscribe(dir_twist_topic, 1, dirTwistCallback);
